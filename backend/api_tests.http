@@ -1,0 +1,79 @@
+@baseUrl = http://localhost:5000/api/auth
+@itineraryUrl = http://localhost:5000/api/itineraries
+
+### 1. Register a New User
+POST {{baseUrl}}/signup
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "SecretPassword123"
+}
+
+###
+
+### 2. Login User
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "SecretPassword123"
+}
+
+###
+
+### 3. Get User Profile (Protected Route)
+@authToken = {{login.response.body.accessToken}}
+
+GET {{baseUrl}}/me
+Authorization: Bearer {{authToken}}
+
+###
+
+### 4. Refresh Access Token
+POST {{baseUrl}}/refresh
+
+###
+
+### 5. Logout User
+POST {{baseUrl}}/logout
+
+###
+
+### 6. Upload Booking (PDF/Image)
+POST {{itineraryUrl}}/upload
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=MultipartBoundary
+
+--MultipartBoundary
+Content-Disposition: form-data; name="file"; filename="ticket.pdf"
+Content-Type: application/pdf
+
+< ./ticket.pdf
+--MultipartBoundary--
+
+###
+
+### 7. Get All Itineraries
+GET {{itineraryUrl}}
+Authorization: Bearer {{authToken}}
+
+###
+
+### 8. Get Itinerary By ID
+GET {{itineraryUrl}}/PLACEHOLDER_ID
+Authorization: Bearer {{authToken}}
+
+###
+
+### 9. Delete Itinerary
+DELETE {{itineraryUrl}}/PLACEHOLDER_ID
+Authorization: Bearer {{authToken}}
+
+###
+
+### 10. Get Shared Itinerary (Public Route)
+GET {{itineraryUrl}}/shared/PLACEHOLDER_SHARE_TOKEN
+
