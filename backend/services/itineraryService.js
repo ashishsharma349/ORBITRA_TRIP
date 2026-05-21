@@ -41,6 +41,21 @@ class ItineraryService {
         extractedData = await activeAIService.extractItineraryFromImage(base64Image, file.mimetype);
       }
 
+      if (extractedData.isValidTravelDocument === false) {
+        if (docRecord.filename) {
+          try {
+            await cloudinaryService.deleteAsset(docRecord.filename);
+          } catch (delErr) {
+            console.error('Error deleting invalid document from Cloudinary:', delErr);
+          }
+        }
+        const reason = extractedData.garbageReason || 'The uploaded file does not appear to contain valid flight tickets, hotel reservations, or travel itineraries.';
+        throw new AppError(
+          `Invalid Travel Document: ${reason}`,
+          HTTP_STATUS.BAD_REQUEST
+        );
+      }
+
       const itinerary = await itineraryRepository.create({
         user: userId,
         document: docRecord._id,

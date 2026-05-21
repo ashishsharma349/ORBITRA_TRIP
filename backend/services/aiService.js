@@ -24,8 +24,10 @@ class AIService {
         },
         {
           role: 'user',
-          content: `Extract the travel details from this text and format as a JSON object matching this schema:
+          content: `Analyze the text and determine if it contains valid travel-related booking details (such as flight tickets, hotel reservations, train tickets, or activities).
+Format the output as a JSON object matching this schema:
 {
+  "isValidTravelDocument": true,
   "title": "Trip Title",
   "startDate": "YYYY-MM-DD or null",
   "endDate": "YYYY-MM-DD or null",
@@ -44,6 +46,12 @@ class AIService {
       ]
     }
   ]
+}
+
+If the document does not contain valid travel booking or ticket information (e.g. it is a textbook page, a syllabus, random text, or unrelated document), you MUST return a JSON object with this specific structure:
+{
+  "isValidTravelDocument": false,
+  "garbageReason": "A brief explanation of the unrelated content detected (e.g., 'college syllabus detected')"
 }
 
 Text to analyze:
@@ -70,8 +78,10 @@ ${text}`,
           content: [
             {
               type: 'text',
-              text: `Extract the travel details from this image and format as a JSON object matching this schema:
+              text: `Analyze the image and determine if it contains valid travel-related booking details (such as flight tickets, hotel reservations, train tickets, or activities).
+Format the output as a JSON object matching this schema:
 {
+  "isValidTravelDocument": true,
   "title": "Trip Title",
   "startDate": "YYYY-MM-DD or null",
   "endDate": "YYYY-MM-DD or null",
@@ -90,6 +100,12 @@ ${text}`,
       ]
     }
   ]
+}
+
+If the document does not contain valid travel booking or ticket information (e.g. it is a textbook page, a syllabus, random text, or unrelated document), you MUST return a JSON object with this specific structure:
+{
+  "isValidTravelDocument": false,
+  "garbageReason": "A brief explanation of the unrelated content detected (e.g., 'unrelated image detected')"
 }`,
             },
             {
