@@ -67,4 +67,6 @@ const itinerarySchema = new mongoose.Schema(
   }
 );
 
+itinerarySchema.index({ user: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Itinerary', itinerarySchema);

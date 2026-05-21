@@ -134,15 +134,15 @@ const DashboardPage = () => {
   const getActivityIcon = (type) => {
     switch (type) {
       case 'flight':
-        return <Plane className="h-5 w-5 text-sky-400 rotate-45" />;
+        return <Plane className="h-6 w-6 text-sky-400 rotate-45" />;
       case 'hotel':
-        return <Building className="h-5 w-5 text-emerald-400" />;
+        return <Building className="h-6 w-6 text-emerald-400" />;
       case 'train':
-        return <Train className="h-5 w-5 text-amber-400" />;
+        return <Train className="h-6 w-6 text-amber-400" />;
       case 'activity':
-        return <Compass className="h-5 w-5 text-purple-400" />;
+        return <Compass className="h-6 w-6 text-purple-400" />;
       default:
-        return <Calendar className="h-5 w-5 text-slate-400" />;
+        return <Calendar className="h-6 w-6 text-slate-400" />;
     }
   };
 
@@ -293,16 +293,28 @@ const DashboardPage = () => {
 
           <div className="lg:col-span-2">
             {selectedItinerary ? (
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur-md min-h-[400px]">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-5 mb-6 gap-4">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 backdrop-blur-md min-h-[400px]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-5 mb-8 gap-4">
                   <div>
-                    <h1 className="text-2xl font-extrabold text-white tracking-tight">{selectedItinerary.title}</h1>
+                    <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight font-display">{selectedItinerary.title}</h1>
                     {(selectedItinerary.startDate || selectedItinerary.endDate) && (
-                      <p className="text-xs text-indigo-400 mt-1 flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5" />
+                      <p className="text-sm font-semibold text-indigo-400 mt-2.5 flex items-center gap-2">
+                        <Calendar className="h-4 w-4 shrink-0" />
                         <span>
-                          {selectedItinerary.startDate ? new Date(selectedItinerary.startDate).toLocaleDateString() : ''}
-                          {selectedItinerary.endDate ? ` - ${new Date(selectedItinerary.endDate).toLocaleDateString()}` : ''}
+                          {selectedItinerary.startDate
+                            ? new Date(selectedItinerary.startDate).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })
+                            : ''}
+                          {selectedItinerary.endDate
+                            ? ` - ${new Date(selectedItinerary.endDate).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}`
+                            : ''}
                         </span>
                       </p>
                     )}
@@ -310,7 +322,7 @@ const DashboardPage = () => {
                   {selectedItinerary.shareToken && (
                     <button
                       onClick={handleShare}
-                      className="flex items-center gap-2 rounded-xl bg-indigo-650 hover:bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-all border border-indigo-500/30 cursor-pointer shrink-0 sm:self-center"
+                      className="flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2.5 text-sm font-bold text-white transition-all border border-indigo-500/30 cursor-pointer shrink-0 sm:self-center shadow-lg shadow-indigo-500/20"
                     >
                       <Share2 className="h-4 w-4" />
                       <span>{copied ? 'Link Copied!' : 'Share Trip'}</span>
@@ -318,44 +330,45 @@ const DashboardPage = () => {
                   )}
                 </div>
 
-                <div className="relative border-l-2 border-slate-800 ml-4 pl-8 space-y-10 py-2">
+                <div className="relative border-l-2 border-slate-800 ml-4 pl-8 space-y-12 py-2">
                   {selectedItinerary.days.map((day) => (
                     <div key={day.dayNumber} className="relative">
-                      <div className="absolute -left-12 top-1.5 flex h-8 w-8 items-center justify-center rounded-full border border-indigo-500 bg-slate-950 font-bold text-xs text-indigo-400">
+                      <div className="absolute -left-[41px] top-1 flex h-9 w-9 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 font-extrabold text-sm text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.25)] z-10">
                         {day.dayNumber}
                       </div>
 
-                      <div className="mb-4">
-                        <h3 className="text-base font-bold text-slate-200">{day.date}</h3>
+                      <div className="mb-5 flex items-center gap-3">
+                        <span className="text-2xs uppercase font-extrabold tracking-widest text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">Day {day.dayNumber}</span>
+                        <h3 className="text-lg font-extrabold text-white tracking-tight">{day.date}</h3>
                       </div>
 
                       <div className="space-y-4">
                         {day.activities.map((act, index) => (
                           <div
                             key={index}
-                            className="group flex gap-4 p-4 rounded-xl border border-slate-800/80 bg-slate-950/20 hover:border-slate-700/60 hover:bg-slate-900/20 transition-all duration-200"
+                            className="group flex gap-5 p-5 rounded-2xl border border-slate-800/80 bg-slate-900/20 hover:border-indigo-500/40 hover:bg-indigo-950/5 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300"
                           >
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-900 border border-slate-800">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-900 border border-slate-800 group-hover:border-indigo-500/30 group-hover:bg-slate-900 transition-all duration-300">
                               {getActivityIcon(act.type)}
                             </div>
 
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2">
-                                <h4 className="text-sm font-bold text-slate-200">{act.title}</h4>
+                                <h4 className="text-base md:text-lg font-bold text-slate-100 tracking-tight group-hover:text-white transition-colors">{act.title}</h4>
                               </div>
 
                               {act.description && (
-                                <p className="text-xs text-slate-400 mt-1 leading-relaxed">{act.description}</p>
+                                <p className="text-sm text-slate-300 mt-2 leading-relaxed font-normal antialiased">{act.description}</p>
                               )}
 
-                              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-3 text-2xs text-slate-500 font-medium">
-                                <span className="flex items-center gap-1">
-                                  <Clock className="h-3.5 w-3.5" />
+                              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-xs font-semibold text-slate-400">
+                                <span className="flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-850">
+                                  <Clock className="h-4 w-4 text-slate-450" />
                                   <span>{act.time}</span>
                                 </span>
                                 {act.location && (
-                                  <span className="flex items-center gap-1">
-                                    <MapPin className="h-3.5 w-3.5" />
+                                  <span className="flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-850">
+                                    <MapPin className="h-4 w-4 text-slate-455" />
                                     <span>{act.location}</span>
                                   </span>
                                 )}

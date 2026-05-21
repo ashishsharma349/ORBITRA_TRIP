@@ -2,19 +2,11 @@ const userRepository = require('../repositories/userRepository');
 const authService = require('../services/authService');
 const { AppError } = require('../utils/errorHandler');
 const { HTTP_STATUS, COOKIE_OPTIONS } = require('../utils/constants');
-const { validateEmail, validatePassword } = require('../utils/validators');
 
 class AuthController {
   signup = async (req, res, next) => {
     try {
       const { email, password } = req.body;
-
-      if (!validateEmail(email)) {
-        return next(new AppError('Please provide a valid email address', HTTP_STATUS.BAD_REQUEST));
-      }
-      if (!validatePassword(password)) {
-        return next(new AppError('Password must be at least 6 characters long', HTTP_STATUS.BAD_REQUEST));
-      }
 
       const existingUser = await userRepository.findByEmail(email);
       if (existingUser) {
@@ -52,10 +44,6 @@ class AuthController {
   login = async (req, res, next) => {
     try {
       const { email, password } = req.body;
-
-      if (!email || !password) {
-        return next(new AppError('Please provide email and password', HTTP_STATUS.BAD_REQUEST));
-      }
 
       const user = await userRepository.findByEmail(email);
       if (!user) {
