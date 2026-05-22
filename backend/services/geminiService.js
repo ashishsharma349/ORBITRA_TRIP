@@ -12,14 +12,12 @@ const fetchWithRetry = async (url, options, maxRetries = 3, initialDelay = 1000)
         return res;
       }
       
-      console.warn(`Gemini API returned status ${res.status}. Retrying in ${delay}ms... (Attempt ${attempt}/${maxRetries})`);
       await new Promise(resolve => setTimeout(resolve, delay));
       delay *= 2;
     } catch (error) {
       if (attempt === maxRetries) {
         throw error;
       }
-      console.warn(`Gemini API request failed: ${error.message}. Retrying in ${delay}ms... (Attempt ${attempt}/${maxRetries})`);
       await new Promise(resolve => setTimeout(resolve, delay));
       delay *= 2;
     }
@@ -27,9 +25,42 @@ const fetchWithRetry = async (url, options, maxRetries = 3, initialDelay = 1000)
 };
 
 class GeminiService {
-  async extractItineraryFromText(text) {
+  async executeWithFallback(payloadBuilder) {
     const apiKey = process.env.MODEL_API_KEY;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const models = ['gemini-1.5-flash', 'gemini-1.5-pro'];
+    let lastError;
+
+    for (const model of models) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      try {
+        const payload = payloadBuilder();
+        const res = await fetchWithRetry(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          const errMsg = `Gemini API error: ${res.statusText} ${JSON.stringify(errData)}`;
+          if (res.status === 429) {
+            lastError = new Error(errMsg);
+            continue;
+          }
+          throw new Error(errMsg);
+        }
+
+        const data = await res.json();
+        const contentText = data.candidates[0].content.parts[0].text;
+        return JSON.parse(contentText);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error('All models failed');
+  }
+
+  async extractItineraryFromText(text) {
     const prompt = `You are a travel assistant that extracts itinerary details from booking documents.
 Analyze the text and determine if it contains valid travel-related booking details (such as flight tickets, hotel reservations, train tickets, or activities).
 Format the output as a JSON object matching this schema:
@@ -64,31 +95,16 @@ If the document does not contain valid travel booking or ticket information (e.g
 Text to analyze:
 ${text}`;
 
-    const res = await fetchWithRetry(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          temperature: 0.1
-        }
-      })
-    });
-
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(`Gemini API error: ${res.statusText} ${JSON.stringify(errData)}`);
-    }
-
-    const data = await res.json();
-    const contentText = data.candidates[0].content.parts[0].text;
-    return JSON.parse(contentText);
+    return this.executeWithFallback(() => ({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        temperature: 0.1
+      }
+    }));
   }
 
   async extractItineraryFromImage(base64Image, mimeType) {
-    const apiKey = process.env.MODEL_API_KEY;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const prompt = `You are a travel assistant that extracts itinerary details from booking documents.
 Analyze the image and determine if it contains valid travel-related booking details (such as flight tickets, hotel reservations, train tickets, or activities).
 Format the output as a JSON object matching this schema:
@@ -120,38 +136,25 @@ If the document does not contain valid travel booking or ticket information (e.g
   "garbageReason": "A brief explanation of the unrelated content detected (e.g., 'unrelated image detected')"
 }`;
 
-    const res = await fetchWithRetry(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inlineData: {
-                  mimeType,
-                  data: base64Image
-                }
+    return this.executeWithFallback(() => ({
+      contents: [
+        {
+          parts: [
+            { text: prompt },
+            {
+              inlineData: {
+                mimeType,
+                data: base64Image
               }
-            ]
-          }
-        ],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          temperature: 0.1
+            }
+          ]
         }
-      })
-    });
-
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(`Gemini API error: ${res.statusText} ${JSON.stringify(errData)}`);
-    }
-
-    const data = await res.json();
-    const contentText = data.candidates[0].content.parts[0].text;
-    return JSON.parse(contentText);
+      ],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        temperature: 0.1
+      }
+    }));
   }
 }
 
