@@ -77,7 +77,21 @@ class ItineraryService {
           errorMessage: error.message,
         });
       }
-      throw error;
+      let clientError = error;
+      if (!(error instanceof AppError)) {
+        if (error.message.includes('429') || error.message.includes('Too Many Requests') || error.message.includes('quota')) {
+          clientError = new AppError(
+            'The itinerary generation service is currently experiencing high demand. Please try uploading again in a few moments.',
+            429
+          );
+        } else {
+          clientError = new AppError(
+            'An error occurred while generating the itinerary. Please try again later.',
+            HTTP_STATUS.INTERNAL_SERVER_ERROR
+          );
+        }
+      }
+      throw clientError;
     }
   }
 

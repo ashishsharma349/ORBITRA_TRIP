@@ -15,8 +15,9 @@ const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
   let message = err.message || 'Something went wrong';
   
-  if (statusCode === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+  if (statusCode === HTTP_STATUS.INTERNAL_SERVER_ERROR || !err.isOperational) {
     console.error('ERROR:', err);
+    message = 'An unexpected error occurred. Please try again later.';
   }
 
   if (err.code === 11000) {
