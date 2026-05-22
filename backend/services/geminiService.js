@@ -27,7 +27,14 @@ const fetchWithRetry = async (url, options, maxRetries = 3, initialDelay = 1000)
 class GeminiService {
   async executeWithFallback(payloadBuilder) {
     const apiKey = process.env.MODEL_API_KEY;
-    const models = ['gemini-1.5-flash', 'gemini-1.5-pro'];
+    const models = [
+      'gemini-2.5-flash',
+      'gemini-2.5-pro',
+      'gemini-3.5-flash',
+      'gemini-3.1-flash-lite',
+      'gemini-flash-latest',
+      'gemini-flash-lite-latest'
+    ];
     let lastError;
 
     for (const model of models) {
@@ -66,20 +73,20 @@ Analyze the text and determine if it contains valid travel-related booking detai
 Format the output as a JSON object matching this schema:
 {
   "isValidTravelDocument": true,
-  "title": "Trip Title",
-  "startDate": "YYYY-MM-DD or null",
-  "endDate": "YYYY-MM-DD or null",
+  "title": "Trip Title (default to 'Travel Itinerary' or 'Booking Summary' if no clear title can be determined)",
+  "startDate": "YYYY-MM-DD or null (must be valid YYYY-MM-DD or null, never output placeholder text)",
+  "endDate": "YYYY-MM-DD or null (must be valid YYYY-MM-DD or null, never output placeholder text)",
   "days": [
     {
       "dayNumber": 1,
       "date": "Day 1 or specific date",
       "activities": [
         {
-          "time": "Time",
+          "time": "Time (e.g. '14:00' or 'Not Specified' if not found in the document)",
           "type": "flight" | "hotel" | "train" | "activity" | "other",
           "title": "Short title",
-          "description": "Details",
-          "location": "Location"
+          "description": "Details or null if not found",
+          "location": "Location or null if not found"
         }
       ]
     }
@@ -110,20 +117,20 @@ Analyze the image and determine if it contains valid travel-related booking deta
 Format the output as a JSON object matching this schema:
 {
   "isValidTravelDocument": true,
-  "title": "Trip Title",
-  "startDate": "YYYY-MM-DD or null",
-  "endDate": "YYYY-MM-DD or null",
+  "title": "Trip Title (default to 'Travel Itinerary' or 'Booking Summary' if no clear title can be determined)",
+  "startDate": "YYYY-MM-DD or null (must be valid YYYY-MM-DD or null, never output placeholder text)",
+  "endDate": "YYYY-MM-DD or null (must be valid YYYY-MM-DD or null, never output placeholder text)",
   "days": [
     {
       "dayNumber": 1,
       "date": "Day 1 or specific date",
       "activities": [
         {
-          "time": "Time",
+          "time": "Time (e.g. '14:00' or 'Not Specified' if not found in the document)",
           "type": "flight" | "hotel" | "train" | "activity" | "other",
           "title": "Short title",
-          "description": "Details",
-          "location": "Location"
+          "description": "Details or null if not found",
+          "location": "Location or null if not found"
         }
       ]
     }
