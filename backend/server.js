@@ -20,9 +20,11 @@ const app = express();
 app.use(helmet());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'tiny' : 'dev'));
 
+const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : '';
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: frontendUrl,
     credentials: true,
   })
 );
