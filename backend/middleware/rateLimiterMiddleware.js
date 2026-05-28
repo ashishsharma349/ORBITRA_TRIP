@@ -1,3 +1,5 @@
+const { AppError } = require('../utils/errorHandler');
+
 const requestLogs = new Map();
 
 const WINDOW_MS = 60000;
@@ -22,10 +24,7 @@ const rateLimiter = (req, res, next) => {
   let timestamps = requestLogs.get(key) || [];
   timestamps = timestamps.filter(ts => now - ts < WINDOW_MS);
   if (timestamps.length >= MAX_REQUESTS) {
-    return res.status(429).json({
-      success: false,
-      message: 'Too many requests. Only 5 requests per minute are allowed.',
-    });
+    return next(new AppError('Too many requests. Only 5 requests per minute are allowed.', 429));
   }
   timestamps.push(now);
   requestLogs.set(key, timestamps);
