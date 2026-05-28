@@ -111,6 +111,17 @@ const idempotency = async (req, res, next) => {
       }
     });
 
+    res.on('close', async () => {
+      try {
+        const current = await IdempotencyKey.findById(record._id);
+        if (current && current.status === 'processing') {
+          await IdempotencyKey.deleteOne({ _id: record._id });
+        }
+      } catch (e) {
+        console.error('Failed to cleanup idempotency key on close:', e);
+      }
+    });
+
     next();
   } catch (error) {
     next(error);
