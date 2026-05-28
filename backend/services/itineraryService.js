@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const fs = require('fs');
+const mongoose = require('mongoose');
 const documentRepository = require('../repositories/documentRepository');
 const itineraryRepository = require('../repositories/itineraryRepository');
 const documentService = require('../services/documentService');
@@ -56,18 +57,26 @@ class ItineraryService {
         );
       }
 
-      const itinerary = await itineraryRepository.create({
-        user: userId,
-        document: docRecord._id,
-        title: extractedData.title || 'Extracted Trip Plan',
-        startDate: extractedData.startDate ? new Date(extractedData.startDate) : null,
-        endDate: extractedData.endDate ? new Date(extractedData.endDate) : null,
-        days: extractedData.days || [],
-        shareToken: crypto.randomUUID(),
-      });
+      let itinerary;
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          itinerary = await itineraryRepository.create({
+            user: userId,
+            document: docRecord._id,
+            title: extractedData.title || 'Extracted Trip Plan',
+            startDate: extractedData.startDate ? new Date(extractedData.startDate) : null,
+            endDate: extractedData.endDate ? new Date(extractedData.endDate) : null,
+            days: extractedData.days || [],
+            shareToken: crypto.randomUUID(),
+          }, { session });
 
-      docRecord.status = 'processed';
-      await docRecord.save();
+          docRecord.status = 'processed';
+          await docRecord.save({ session });
+        });
+      } finally {
+        await session.endSession();
+      }
 
       return itinerary;
     } catch (error) {
@@ -121,8 +130,7 @@ class ItineraryService {
       throw new AppError('Access Denied. You do not own this itinerary.', HTTP_STATUS.FORBIDDEN);
     }
 
-    await itineraryRepository.delete(id);
-
+    // 1. Delete associated files first (Cloudinary or local file system)
     if (itinerary.document) {
       const doc = await documentRepository.findById(itinerary.document._id);
       if (doc) {
@@ -141,8 +149,20 @@ class ItineraryService {
             console.error('Error deleting local document file:', err);
           }
         }
-        await documentRepository.delete(doc._id);
       }
+    }
+
+    // 2. Perform database deletions atomically in a transaction session
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        await itineraryRepository.delete(id, { session });
+        if (itinerary.document) {
+          await documentRepository.delete(itinerary.document._id, { session });
+        }
+      });
+    } finally {
+      await session.endSession();
     }
   }
 
