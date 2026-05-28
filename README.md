@@ -1,84 +1,77 @@
-# AI-Powered Travel Itinerary Planner
+# Orbitra Trip
 
-A MERN application for AI-powered travel planning. The system parses uploaded travel booking documents (PDFs and JPEG/PNG/WebP images) and generates structured itineraries using the Google Gemini 2.5 Flash API.
+Orbitra Trip is a travel companion app that transforms chaotic booking receipts into neat, chronological travel itineraries. By uploading booking confirmation PDFs or images (like flights, hotels, and train tickets), Orbitra uses the Google Gemini API to parse the documents and generate a day-by-day trip roadmap automatically.
+
+---
+
+## Key Features
+
+* **AI Document Parsing**: Drop your booking confirmations (PDF, JPEG, PNG, or WebP) and let the AI extract dates, times, locations, and descriptions.
+* **Interactive Timelines**: View your flight, lodging, transit, and local activities organized day-by-day in a clean visual layout.
+* **Public Trip Sharing**: Generate a secure shareable link for each itinerary so friends or family can view your schedule without needing an account.
+* **Secure Session Handling**: Uses JWT authentication with rotated refresh tokens stored in HTTP-only, secure cookies.
+* **Responsive Dark UI**: Designed with a premium, responsive glassmorphism dark aesthetic for modern desktop and mobile viewports.
+
+---
+
+## Tech Stack
+
+* **Frontend**: React (Vite), Lucide Icons, Axios
+* **Backend**: Node.js, Express 5.0, Mongoose (MongoDB Atlas)
+* **Storage**: Cloudinary (for secure document uploads and hosting)
+* **AI Engine**: Google Gemini API (with automatic fallback strategy)
 
 ---
 
 ## Folder Structure
 
-```
+```text
 /
-├── backend/                  # Express 5.0 API Server
+├── backend/                  # Express API Server
 │   ├── config/              # Database connectivity
-│   ├── controllers/         # HTTP controllers
-│   ├── middleware/          # Request interceptors (security, validation, logs)
+│   ├── controllers/         # HTTP controller handlers
+│   ├── middleware/          # Request interceptors (security, validation, rate limits)
 │   ├── models/              # Mongoose database models
-│   ├── repositories/        # Database abstraction layer
+│   ├── repositories/        # Database abstraction layer (Repository pattern)
 │   ├── routes/              # Express route definitions
-│   ├── services/            # Core business logic & integrations
-│   └── utils/               # App errors, constants, and utilities
-└── frontend/                 # React 19 + Vite 8 Single Page App
+│   ├── services/            # Core business logic & Gemini/Cloudinary integrations
+│   └── utils/               # App error classes, constants, and helpers
+└── frontend/                 # React Single Page App
     ├── src/
-    │   ├── api/             # Axios API clients
+    │   ├── api/             # Axios API integration clients
     │   ├── components/      # Reusable UI widgets
     │   ├── context/         # Auth contexts and session persistence
-    │   ├── pages/           # Pages (Dashboard, Share Page, Auth Pages)
-    │   └── utils/           # Helper utilities
+    │   ├── pages/           # Pages (Dashboard, Share Page, Login/Signup)
+    │   └── utils/           # Frontend helper utilities
 ```
-
----
-
-## Architectural Highlights
-
-The backend implements a 6-layer architecture ensuring separation of concerns and maintainability:
-`Route -> Middleware -> Controller -> Service -> Repository -> Model`
-
-- **Separation of Concerns**: Controllers process HTTP request/response payloads, services handle core business logic, and repositories encapsulate database access, simplifying transitions to alternative data stores.
-- **Validation Layers**: Schema validation is performed at the middleware boundary (via Zod) to catch invalid input before execution, while business rule validation (ownership checks) is executed at the service boundary.
-- **Logging**: Morgan middleware records requests in development (`dev` style) and logs concise status details in production (`tiny` style).
-- **Centralized Error Handling**: Centralized error handler catches exceptions and returns consistent error responses.
-
----
-
-## Performance & Scalability
-
-- **Database Indexes**: Compound index on `Itinerary` (`user: 1, createdAt: -1`) and query index on `Document` (`user: 1`) prevent full collection scans at scale.
-- **Rate-Limiter Cleanup**: Sliding-window rate limiter runs a periodic sweep to prune inactive IPs, preventing memory leaks in long-running processes.
-- **Resilience**: Gemini client wraps requests in an exponential-backoff retry loop to tolerate temporary `429` (rate limits) or `503` (service temporary downtime) status responses.
-
----
-
-## Security
-
-- **HTTP Secure Headers**: Helmet middleware mounts standard security headers.
-- **NoSQL Injection Prevention**: Custom query sanitizer strips `$` and `.` MongoDB operator parameters recursively from request body, parameters, and queries.
-- **CORS Restriction**: Configured to restrict access exclusively to the defined frontend domain.
-- **Authentication**: JWT authentication with password encryption via Bcrypt and refresh token rotation stored in secure, HTTP-only, SameSite=Strict cookies.
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js (v18+)
-- MongoDB (Local or Atlas instance)
-- Cloudinary Account
-- Gemini API Key
+* Node.js (v18 or higher)
+* A MongoDB database (local installation or Atlas cluster)
+* A Cloudinary account (for media uploads)
+* A Google Gemini API key
 
 ### Backend Setup
+
 1. Navigate to the backend directory:
    ```bash
    cd backend
    ```
+
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Create a `.env` file using the template below:
+
+3. Create a `.env` file in the `backend/` folder and populate it with your credentials:
    ```env
    PORT=5000
    NODE_ENV=development
-   MONGO_URI=mongodb+srv://...
+   MONGO_URI=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret
    ACCESS_TOKEN_SECRET=your_access_token_secret
    ACCESS_TOKEN_EXPIRY=15m
@@ -86,27 +79,39 @@ The backend implements a 6-layer architecture ensuring separation of concerns an
    REFRESH_TOKEN_EXPIRY=7d
    FRONTEND_URL=http://localhost:5173
    MODEL_API_KEY=your_gemini_api_key
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
    CLOUDINARY_API_KEY=your_cloudinary_api_key
    CLOUDINARY_API_SECRET=your_cloudinary_api_secret
    UPLOAD_DIR=uploads
    ```
-4. Start the server:
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
 ### Frontend Setup
+
 1. Navigate to the frontend directory:
    ```bash
    cd frontend
    ```
+
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Start the dev server:
+
+3. Start the Vite development server:
    ```bash
    npm run dev
    ```
-   
+
+The frontend will run on `http://localhost:5173`.
+
+---
+
+## Live Application
+
+You can access the live version of Orbitra Trip here:
+https://orbitra-trip.vercel.app
