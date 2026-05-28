@@ -109,4 +109,4 @@ The backend implements a 6-layer architecture ensuring separation of concerns an
    ```bash
    npm run dev
    ```
-   *(Frontend accessible at http://localhost:5173)*
+   
