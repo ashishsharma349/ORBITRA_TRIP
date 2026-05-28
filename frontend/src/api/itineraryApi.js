@@ -3,13 +3,22 @@ import axiosInstance from '../utils/axiosInstance';
 export const uploadDocument = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
-
-  const response = await axiosInstance.post('/api/itineraries/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  return response.data;
+  
+  // Generate idempotency key
+  const idempotencyKey = crypto.randomUUID?.() 
+    ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  
+  try {
+    const response = await axiosInstance.post('/api/itineraries/upload', formData, {
+      headers: {
+        'Idempotency-Key': idempotencyKey,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Document upload failed:', error.message);
+    throw error; // Let caller decide retry logic
+  }
 };
 
 export const getItineraries = async () => {
