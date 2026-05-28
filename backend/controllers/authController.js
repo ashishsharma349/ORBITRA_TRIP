@@ -22,7 +22,7 @@ class AuthController {
       const accessToken = authService.generateAccessToken(user);
       const refreshToken = authService.generateRefreshToken(user);
 
-      await userRepository.addRefreshToken(user._id, refreshToken);
+      await userRepository.addRefreshToken(user._id, authService.hashToken(refreshToken));
 
       res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
       
@@ -58,7 +58,7 @@ class AuthController {
       const accessToken = authService.generateAccessToken(user);
       const refreshToken = authService.generateRefreshToken(user);
 
-      await userRepository.addRefreshToken(user._id, refreshToken);
+      await userRepository.addRefreshToken(user._id, authService.hashToken(refreshToken));
 
       res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
 
@@ -95,7 +95,8 @@ class AuthController {
         return next(new AppError('User not found.', HTTP_STATUS.UNAUTHORIZED));
       }
 
-      if (!user.refreshTokens.includes(refreshToken)) {
+      const hashedToken = authService.hashToken(refreshToken);
+      if (!user.refreshTokens.includes(hashedToken)) {
         await userRepository.update(user._id, { refreshTokens: [] });
         res.clearCookie('refreshToken', COOKIE_OPTIONS);
         return next(new AppError('Compromised session. Please log in again.', HTTP_STATUS.FORBIDDEN));
@@ -104,7 +105,7 @@ class AuthController {
       const newAccessToken = authService.generateAccessToken(user);
       const newRefreshToken = authService.generateRefreshToken(user);
 
-      await userRepository.replaceRefreshToken(user._id, refreshToken, newRefreshToken);
+      await userRepository.replaceRefreshToken(user._id, hashedToken, authService.hashToken(newRefreshToken));
 
       res.cookie('refreshToken', newRefreshToken, COOKIE_OPTIONS);
 
@@ -124,7 +125,7 @@ class AuthController {
       if (refreshToken) {
         const decoded = authService.verifyRefreshToken(refreshToken);
         if (decoded) {
-          await userRepository.removeRefreshToken(decoded.id, refreshToken);
+          await userRepository.removeRefreshToken(decoded.id, authService.hashToken(refreshToken));
         }
       }
 
