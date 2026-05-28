@@ -51,8 +51,17 @@ const validateUploadInput = (req, res, next) => {
   next();
 };
 
+const objectIdSchema = z.object({
+  params: z.object({
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid resource identifier'),
+  }),
+});
+
+const validateObjectIdParam = validate(objectIdSchema);
+
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
   validateUploadInput,
+  validateObjectIdParam,
 };

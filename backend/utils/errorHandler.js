@@ -32,6 +32,11 @@ const errorHandler = (err, req, res, next) => {
     statusCode = HTTP_STATUS.BAD_REQUEST;
   }
 
+  if (err.name === 'CastError') {
+    message = `Invalid ${err.path}: ${err.value}`;
+    statusCode = HTTP_STATUS.BAD_REQUEST;
+  }
+
   if (err.name === 'JsonWebTokenError') {
     message = 'Invalid token. Please log in again.';
     statusCode = HTTP_STATUS.UNAUTHORIZED;

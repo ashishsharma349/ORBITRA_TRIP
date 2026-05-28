@@ -47,3 +47,7 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Best practices reference file
+best_practises.txt
+
