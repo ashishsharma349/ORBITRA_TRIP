@@ -37,10 +37,7 @@ class UserRepository {
   async replaceRefreshToken(userId, oldToken, newToken) {
     return await User.findOneAndUpdate(
       { _id: userId, refreshTokens: oldToken },
-      { 
-        $pull: { refreshTokens: oldToken },
-        $push: { refreshTokens: newToken }
-      },
+      { $set: { 'refreshTokens.$': newToken } },
       { new: true }
     );
   }
