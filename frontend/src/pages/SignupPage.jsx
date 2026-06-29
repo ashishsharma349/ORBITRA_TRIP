@@ -1,18 +1,43 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import SignupForm from '../components/SignupForm';
+import { WanderLogo } from '../components/common/WanderIcons';
 
 const SignupPage = () => {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-slate-950 px-4 py-12 text-slate-100 selection:bg-indigo-500 selection:text-white overflow-hidden">
-      <div className="absolute top-1/4 left-1/4 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-indigo-500/10 blur-3xl"></div>
-      <div className="absolute bottom-1/4 right-1/4 -z-10 h-96 w-96 translate-x-1/2 rounded-full bg-purple-500/10 blur-3xl"></div>
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1E293B] flex flex-col justify-between selection:bg-[#D97706]/20 relative overflow-hidden font-sans">
+      {/* Real Watercolor Artwork Background */}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-90 pointer-events-none"
+        style={{ backgroundImage: "url('/assets/signup_bg.png')" }}
+      />
+      {/* TOP NAV BAR */}
+      <header className="px-8 py-6 flex items-center justify-between z-10">
+        <Link to="/">
+          <WanderLogo />
+        </Link>
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-[#64748B]">Already have an account?</span>
+          <Link
+            to="/login"
+            className="border border-[#EBE7DF] bg-[#FFFDF9] hover:bg-[#FAF8F5] text-[#1D3B3A] font-semibold px-4 py-2 rounded-xl transition-all shadow-2xs flex items-center gap-1.5"
+          >
+            <span>Login</span>
+            <span>→</span>
+          </Link>
+        </div>
+      </header>
 
-      <div className="mb-6 flex items-center gap-2">
-        <span className="text-2xl font-black tracking-wider text-indigo-400">ORBITRA</span>
-        <span className="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">TRIP</span>
-      </div>
+      {/* MAIN CONTENT AREA */}
+      <main className="flex-1 flex items-center justify-center px-4 py-8 z-10">
+        <SignupForm />
+      </main>
 
-      <SignupForm />
+      {/* FOOTER */}
+      <footer className="px-8 py-6 border-t border-[#EBE7DF]/60 flex flex-col sm:flex-row items-center justify-between text-xs text-[#94A3B8] gap-4 z-10">
+        <WanderLogo className="h-6 w-6" textClass="text-base font-bold font-serif text-[#1D3B3A]" />
+        <div>© 2026 Wander. All rights reserved.</div>
+      </footer>
     </div>
   );
 };

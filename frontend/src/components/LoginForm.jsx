@@ -2,21 +2,23 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { FlightIcon } from './common/WanderIcons';
 
 const LoginForm = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!email || !password) {
       setError('Please fill in all fields.');
       return;
@@ -29,7 +31,7 @@ const LoginForm = () => {
     } catch (err) {
       console.error(err);
       setError(
-        err.response?.data?.error?.message || 
+        err.response?.data?.error?.message ||
         'Failed to log in. Please check your credentials.'
       );
     } finally {
@@ -38,86 +40,103 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-2xl backdrop-blur-md">
-      <div className="mb-8 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-white">Welcome Back</h2>
-        <p className="mt-2 text-sm text-slate-400">
-          Enter your credentials to access your itineraries
+    <div className="w-full max-w-md bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-8 sm:p-10 shadow-xl relative">
+      {/* Top Icon Badge */}
+      <div className="flex justify-center mb-4">
+        <div className="w-12 h-12 rounded-full bg-[#FAF8F5] border border-[#EBE7DF] flex items-center justify-center text-[#1D3B3A]">
+          <FlightIcon className="w-6 h-6 rotate-45 text-[#1D3B3A]" />
+        </div>
+      </div>
+
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-serif font-bold text-[#0F172A] tracking-tight">Welcome Back!</h2>
+        <p className="mt-2 text-sm text-[#64748B]">
+          Login to continue your journey.
         </p>
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg bg-red-950/50 border border-red-500/30 p-4 text-sm text-red-400">
+        <div className="mb-6 rounded-xl bg-red-50 border border-red-200 p-4 text-xs font-semibold text-red-700">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-slate-300">Email Address</label>
-          <div className="relative mt-2">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Mail className="h-5 w-5 text-slate-500" />
+          <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">Email</label>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#94A3B8]">
+              <Mail className="h-4 w-4" />
             </div>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block w-full rounded-xl border border-slate-800 bg-slate-950 pl-10 pr-3 py-3 text-slate-100 placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all duration-200"
-              placeholder="you@example.com"
+              className="block w-full rounded-xl border border-[#EBE7DF] bg-[#FAF8F5] pl-10 pr-3.5 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#1D3B3A] focus:bg-[#FFFFFF] focus:outline-none transition-all"
+              placeholder="Enter your email"
               required
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300">Password</label>
-          <div className="relative mt-2">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Lock className="h-5 w-5 text-slate-500" />
+          <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">Password</label>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#94A3B8]">
+              <Lock className="h-4 w-4" />
             </div>
             <input
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full rounded-xl border border-slate-800 bg-slate-950 pl-10 pr-10 py-3 text-slate-100 placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all duration-200"
-              placeholder="••••••••"
+              className="block w-full rounded-xl border border-[#EBE7DF] bg-[#FAF8F5] pl-10 pr-10 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#1D3B3A] focus:bg-[#FFFFFF] focus:outline-none transition-all"
+              placeholder="Enter your password"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300 transition-colors"
+              className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#94A3B8] hover:text-[#475569] transition-colors"
             >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
+        </div>
+
+        <div className="flex items-center justify-between text-xs text-[#64748B]">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="rounded border-[#EBE7DF] text-[#1D3B3A] focus:ring-[#1D3B3A]"
+            />
+            <span>Remember me</span>
+          </label>
+          <span className="font-semibold text-[#1D3B3A] hover:underline cursor-pointer">Forgot password?</span>
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1D3B3A] hover:bg-[#162E2D] px-4 py-3.5 text-sm font-semibold text-white shadow-md transition-all cursor-pointer disabled:opacity-50"
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Signing in...
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Signing in...</span>
             </>
           ) : (
-            'Sign In'
+            <>
+              <span>Login</span>
+              <FlightIcon className="h-4 w-4 rotate-45 text-white" />
+            </>
           )}
         </button>
       </form>
 
-      <p className="mt-8 text-center text-sm text-slate-400">
-        Don't have an account?{' '}
-        <button
-          onClick={() => navigate('/signup')}
-          className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline transition-all cursor-pointer"
-        >
-          Sign up for free
-        </button>
+      <p className="mt-6 text-center text-xs text-[#94A3B8] leading-relaxed">
+        By logging in, you agree to our <span className="underline cursor-pointer">Terms of Service</span> and <span className="underline cursor-pointer">Privacy Policy</span>.
       </p>
     </div>
   );
