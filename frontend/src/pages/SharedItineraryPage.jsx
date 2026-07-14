@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import {
-  Calendar,
-  Plane,
-  Building,
-  Train,
-  Compass,
-  Clock,
-  MapPin,
-  Loader2,
-  AlertCircle
-} from 'lucide-react';
+import { Loader2, AlertCircle, UserPlus, Lock, Share2, Mail } from 'lucide-react';
 import * as itineraryApi from '../api/itineraryApi';
+import {
+  WanderLogo,
+  FlightIcon,
+  HotelIcon,
+  TrainIcon,
+  ActivityIcon,
+  StampBadge,
+  PagodaLandscapeIllustration,
+  JapanMapGraphic,
+  GithubIcon,
+  LinkedinIcon
+} from '../components/common/WanderIcons';
+import InteractiveMap from '../components/map/InteractiveMap';
+import ExpenseBreakdownCard from '../components/dashboard/ExpenseBreakdownCard';
 
 const SharedItineraryPage = () => {
   const { shareToken } = useParams();
@@ -35,132 +39,225 @@ const SharedItineraryPage = () => {
   }, [shareToken]);
 
   const getActivityIcon = (type) => {
-    switch (type) {
+    switch (type?.toLowerCase()) {
       case 'flight':
-        return <Plane className="h-6 w-6 text-sky-400 rotate-45" />;
+        return <FlightIcon className="h-5 w-5 text-[#1D3B3A]" />;
       case 'hotel':
-        return <Building className="h-6 w-6 text-emerald-400" />;
+      case 'lodging':
+        return <HotelIcon className="h-5 w-5 text-[#D97706]" />;
       case 'train':
-        return <Train className="h-6 w-6 text-amber-400" />;
-      case 'activity':
-        return <Compass className="h-6 w-6 text-purple-400" />;
+      case 'transit':
+        return <TrainIcon className="h-5 w-5 text-[#059669]" />;
       default:
-        return <Calendar className="h-6 w-6 text-slate-400" />;
+        return <ActivityIcon className="h-5 w-5 text-[#7C3AED]" />;
+    }
+  };
+
+  const getActivityBadgeClass = (type) => {
+    switch (type?.toLowerCase()) {
+      case 'flight':
+        return 'bg-[#E8F3F1] text-[#1D3B3A] border-[#C2E0DC]';
+      case 'hotel':
+      case 'lodging':
+        return 'bg-[#FEF3C7] text-[#B45309] border-[#FDE68A]';
+      case 'train':
+      case 'transit':
+        return 'bg-[#D1FAE5] text-[#047857] border-[#A7F3D0]';
+      default:
+        return 'bg-[#F3E8FF] text-[#6D28D9] border-[#DDD6FE]';
     }
   };
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 text-slate-100">
-        <Loader2 className="h-10 w-10 text-indigo-500 animate-spin" />
-        <p className="mt-4 text-sm font-semibold text-slate-400">Loading travel roadmap...</p>
+      <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center text-[#1E293B]">
+        <Loader2 className="h-10 w-10 text-[#1D3B3A] animate-spin" />
+        <p className="mt-4 text-sm font-semibold text-[#64748B]">Loading Wander travel roadmap...</p>
       </div>
     );
   }
 
   if (error || !itinerary) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 text-slate-100 p-4">
-        <div className="rounded-full bg-red-950/40 border border-red-500/30 p-4 mb-4 text-red-400">
-          <AlertCircle className="h-10 w-10" />
+      <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-14 h-14 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-red-600 mb-4">
+          <AlertCircle className="h-8 w-8" />
         </div>
-        <h2 className="text-xl font-bold text-white">Oops!</h2>
-        <p className="mt-2 text-sm text-slate-400 text-center max-w-sm">{error || 'Unable to retrieve the shared itinerary.'}</p>
+        <h2 className="text-2xl font-serif font-bold text-[#0F172A]">Itinerary Not Found</h2>
+        <p className="mt-2 text-sm text-[#64748B] max-w-sm">{error || 'Unable to retrieve the shared itinerary.'}</p>
         <Link
-          to="/login"
-          className="mt-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-6 py-2.5 text-sm font-semibold text-white transition-all shadow-lg shadow-indigo-500/20"
+          to="/"
+          className="mt-6 rounded-xl bg-[#1D3B3A] hover:bg-[#162E2D] px-6 py-3 text-sm font-semibold text-white transition-all shadow-md"
         >
-          Go to Login
+          Go to Wander Home
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
-      <nav className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-black tracking-wider text-indigo-400">ORBITRA</span>
-              <span className="rounded-full bg-indigo-500/20 px-2 py-0.5 text-2xs font-semibold text-indigo-300">SHARED</span>
-            </div>
-            <Link
-              to="/signup"
-              className="rounded-xl bg-slate-800 hover:bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition-all border border-slate-700/50"
-            >
-              Create My Account
-            </Link>
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1E293B] flex flex-col font-sans selection:bg-[#D97706]/20">
+      {/* 1. PUBLIC TOP HEADER */}
+      <header className="bg-[#FFFDF9] border-b border-[#EBE7DF] px-6 h-18 flex items-center justify-between sticky top-0 z-40">
+        <div className="flex items-center gap-6">
+          <Link to="/">
+            <WanderLogo />
+          </Link>
+          <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-[#64748B] bg-[#FAF8F5] px-3 py-1.5 rounded-full border border-[#EBE7DF]">
+            <Lock className="w-3.5 h-3.5 text-[#1D3B3A]" />
+            <span>This is a public itinerary</span>
           </div>
         </div>
-      </nav>
 
-      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 backdrop-blur-md">
-          <div className="border-b border-slate-800 pb-6 mb-8">
-            <span className="inline-block rounded-full bg-indigo-500/10 px-3 py-1 text-2xs font-bold text-indigo-400 uppercase tracking-wider mb-2 font-semibold">
-              Shared Itinerary
-            </span>
-            <h1 className="text-3xl font-black text-white tracking-tight sm:text-4xl font-display">{itinerary.title}</h1>
-            {(itinerary.startDate || itinerary.endDate) && (
-              <p className="text-sm font-semibold text-indigo-400 mt-3 flex items-center gap-2">
-                <Calendar className="h-4 w-4 shrink-0" />
-                <span>
-                  {itinerary.startDate ? new Date(itinerary.startDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
-                  {itinerary.endDate ? ` - ${new Date(itinerary.endDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}` : ''}
-                </span>
-              </p>
-            )}
+        <Link
+          to="/signup"
+          className="bg-[#1D3B3A] hover:bg-[#162E2D] text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm"
+        >
+          <span>Create Your Own Journey</span>
+          <UserPlus className="w-4 h-4" />
+        </Link>
+      </header>
+
+      {/* 2. MAIN CONTAINER */}
+      <main className="flex-1 max-w-7xl mx-auto w-full p-6 lg:p-10 space-y-8">
+        {/* HERO TITLE BANNER & CREATOR CARD */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-8 bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xs">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+              <div className="space-y-3 max-w-xl z-10">
+                <h1 className="font-serif font-extrabold text-3xl sm:text-4xl text-[#0F172A]">
+                  {itinerary.title || 'Japan Adventure'}
+                </h1>
+                <p className="text-xs font-bold text-[#64748B]">
+                  {itinerary.startDate ? new Date(itinerary.startDate).toLocaleDateString() : '10 May 2026'}
+                  {itinerary.endDate ? ` – ${new Date(itinerary.endDate).toLocaleDateString()}` : ' – 20 May 2026'} • Delhi → Tokyo → Kyoto → Osaka → Delhi
+                </p>
+                <p className="text-sm text-[#475569] leading-relaxed pt-2">
+                  A beautiful multi-city journey parsed and organized automatically with Wander AI.
+                </p>
+              </div>
+
+              <img
+                src="/assets/shared_fuji_banner.png"
+                alt="Fujisan Banner"
+                className="w-48 h-28 object-cover rounded-xl shrink-0 hidden sm:block shadow-xs"
+              />
+            </div>
           </div>
 
-          <div className="relative border-l-2 border-slate-800 ml-4 pl-8 space-y-12 py-2">
-            {itinerary.days.map((day) => (
-              <div key={day.dayNumber} className="relative">
-                <div className="absolute -left-[41px] top-1 flex h-9 w-9 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 font-extrabold text-sm text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.25)] z-10">
-                  {day.dayNumber}
-                </div>
+          <div className="lg:col-span-4 bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-6 space-y-4 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#E8F3F1] flex items-center justify-center text-[#1D3B3A] font-bold text-sm">
+                TR
+              </div>
+              <div>
+                <div className="text-2xs font-bold uppercase text-[#94A3B8]">Shared by</div>
+                <div className="text-xs font-bold text-[#0F172A]">{itinerary.user?.email || 'traveler@wander.app'}</div>
+              </div>
+            </div>
+            <div className="text-2xs text-[#64748B] pt-2 border-t border-[#EBE7DF]">
+              Anyone with this link can view this itinerary.
+            </div>
+          </div>
+        </div>
 
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="text-2xs uppercase font-extrabold tracking-widest text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">Day {day.dayNumber}</span>
-                  <h3 className="text-lg font-extrabold text-white tracking-tight">{day.date}</h3>
-                </div>
+        {/* ROADMAP TIMELINE & MAP GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* LEFT 8 COLS: TIMELINE */}
+          <div className="lg:col-span-8 space-y-6">
+            <h3 className="font-serif font-bold text-xl text-[#0F172A]">
+              Your Itinerary
+            </h3>
 
-                <div className="space-y-4">
-                  {day.activities.map((act, index) => (
-                    <div
-                      key={index}
-                      className="group flex gap-5 p-5 rounded-2xl border border-slate-800/80 bg-slate-900/20 hover:border-indigo-500/40 hover:bg-indigo-950/5 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300"
-                    >
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-900 border border-slate-800 group-hover:border-indigo-500/30 group-hover:bg-slate-900 transition-all duration-300">
+            <div className="relative border-l-2 border-dashed border-[#CBD5E1] ml-4 pl-8 space-y-8 py-2">
+              {itinerary.days?.map((day, dIdx) => (
+                <div key={dIdx} className="space-y-4 relative">
+                  {/* Day Marker */}
+                  <div className="mb-2">
+                    <span className="text-xs font-extrabold uppercase text-[#0F172A] tracking-wider">
+                      Day {day.dayNumber} • {day.date}
+                    </span>
+                  </div>
+
+                  {/* Activities */}
+                  {day.activities?.map((act, aIdx) => (
+                    <div key={aIdx} className="relative">
+                      {/* Node Icon on Timeline Line */}
+                      <div className="absolute -left-[45px] top-3 w-8 h-8 rounded-full bg-[#FFFDF9] border-2 border-[#1D3B3A] flex items-center justify-center shadow-xs z-10">
                         {getActivityIcon(act.type)}
                       </div>
 
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-base md:text-lg font-bold text-slate-100 tracking-tight group-hover:text-white transition-colors">{act.title}</h4>
-                        {act.description && (
-                          <p className="text-sm text-slate-300 mt-2 leading-relaxed font-normal antialiased">{act.description}</p>
-                        )}
-                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-xs font-semibold text-slate-400">
-                          <span className="flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-850">
-                            <Clock className="h-4 w-4 text-slate-450" />
-                            <span>{act.time}</span>
+                      {/* Card Content */}
+                      <div className="bg-[#FFFDF9] border border-[#EBE7DF] rounded-2xl p-5 space-y-2 hover:border-[#1D3B3A]/30 transition-all shadow-2xs">
+                        <div className="flex items-center justify-between">
+                          <span className={`text-2xs font-bold uppercase px-2.5 py-0.5 rounded-full border ${getActivityBadgeClass(act.type)}`}>
+                            {act.type || 'Activity'}
                           </span>
-                          {act.location && (
-                            <span className="flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-850">
-                              <MapPin className="h-4 w-4 text-slate-455" />
-                              <span>{act.location}</span>
-                            </span>
-                          )}
+                          <span className="text-xs font-semibold text-[#64748B]">{act.time}</span>
                         </div>
+
+                        <h4 className="font-bold text-base text-[#0F172A]">{act.title}</h4>
+
+                        {act.description && (
+                          <p className="text-xs text-[#64748B] leading-relaxed">{act.description}</p>
+                        )}
+
+                        {act.location && (
+                          <div className="text-2xs font-semibold text-[#94A3B8] pt-1">
+                            Location: {act.location}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <div className="text-center py-6">
+              <span className="font-handwriting text-2xl text-[#B45309]">
+                Have a wonderful journey!
+              </span>
+            </div>
+          </div>
+
+          {/* RIGHT 4 COLS: MAP & EXPENSE CARD */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* INTERACTIVE MAP CARD */}
+            <div className="bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-6 space-y-4 shadow-2xs">
+              <h4 className="font-serif font-bold text-base text-[#0F172A] flex items-center gap-2">
+                <FlightIcon className="w-4 h-4 text-[#1D3B3A]" />
+                <span>Interactive Journey Map</span>
+              </h4>
+
+              <InteractiveMap className="w-full h-56" />
+            </div>
+
+            {/* EXPENSE BREAKDOWN CARD */}
+            <ExpenseBreakdownCard activities={itinerary.days?.flatMap((d) => d.activities || []) || []} />
           </div>
         </div>
       </main>
+
+      {/* 3. FOOTER */}
+      <footer className="bg-[#FAF8F5] border-t border-[#EBE7DF] pt-12 pb-8 mt-12">
+        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-12 gap-8 text-xs text-[#64748B]">
+          <div className="md:col-span-6 space-y-3">
+            <WanderLogo />
+            <p className="max-w-xs leading-relaxed">
+              Turn your scattered travel bookings into one beautiful journey.
+            </p>
+          </div>
+          <div className="md:col-span-6 flex flex-wrap justify-start md:justify-end gap-6 items-center">
+            <a href="https://github.com/ashishsharma349/ORBITRA_TRIP" target="_blank" rel="noreferrer" className="hover:text-[#1D3B3A]">GitHub</a>
+            <a href="https://www.linkedin.com/in/ashish-sharma-8802a8346/" target="_blank" rel="noreferrer" className="hover:text-[#1D3B3A]">LinkedIn</a>
+            <a href="mailto:ashishsharma90807@gmail.com" className="hover:text-[#1D3B3A]">ashishsharma90807@gmail.com</a>
+          </div>
+        </div>
+        <div className="text-center text-2xs text-[#94A3B8] mt-8 pt-4 border-t border-[#EBE7DF]">
+          © 2026 Wander. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 };
