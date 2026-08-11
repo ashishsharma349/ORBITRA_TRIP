@@ -10,8 +10,8 @@
 
 body {
   font-family: var(--wander-font-sans);
-  background-color: #030712;
-  color: #f3f4f6;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
   overflow-x: hidden;
 }
 
@@ -21,11 +21,11 @@ body {
 
 /* Glassmorphic Travel Card */
 .wander-glass-card {
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-hairline);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .wander-glass-card-hover {
