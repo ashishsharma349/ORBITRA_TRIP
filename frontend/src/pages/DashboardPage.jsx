@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'motion/react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import {
   LogOut,
@@ -274,13 +275,15 @@ const DashboardPage = () => {
               <h2 className="font-serif font-bold text-lg text-[#0F172A]">My Trips</h2>
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => fileInputRef.current?.click()}
-              className="w-full bg-[#1D3B3A] hover:bg-[#162E2D] text-white font-medium text-sm py-3 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-medium text-sm py-3 rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>New Trip</span>
-            </button>
+            </motion.button>
 
             <input
               type="file"
@@ -294,24 +297,30 @@ const DashboardPage = () => {
             <div className="space-y-2 max-h-[55vh] overflow-y-auto pr-1">
               {itineraries.length === 0 ? (
                 <div className="text-center py-8 space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-[#FAF8F5] border border-[#EBE7DF] mx-auto flex items-center justify-center text-[#94A3B8]">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-canvas)] border border-[var(--color-hairline)] mx-auto flex items-center justify-center text-[#94A3B8]">
                     <FlightIcon className="w-6 h-6 rotate-45 text-[#94A3B8]" />
                   </div>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <p className="text-xs text-[var(--color-ink-subtle)] leading-relaxed">
                     Your journeys will appear here.<br />Start by creating a new trip.
                   </p>
                 </div>
               ) : (
-                itineraries.map((trip) => {
+                <AnimatePresence mode="popLayout">
+                {itineraries.map((trip) => {
                   const isSelected = selectedItinerary?._id === trip._id;
                   return (
-                    <div
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                       key={trip._id}
                       onClick={() => setSelectedItinerary(trip)}
                       className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group ${
                         isSelected
-                          ? 'bg-[#FAF8F5] border-[#1D3B3A]/40 shadow-xs'
-                          : 'bg-[#FFFDF9] border-[#EBE7DF] hover:border-[#CBD5E1]'
+                          ? 'bg-[var(--color-surface-2)] border-[var(--color-primary)] shadow-sm'
+                          : 'bg-[var(--color-surface-1)] border-[var(--color-hairline)] hover:border-[var(--color-hairline-strong)]'
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
@@ -336,9 +345,10 @@ const DashboardPage = () => {
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                    </div>
+                    </motion.div>
                   );
-                })
+                })}
+                </AnimatePresence>
               )}
             </div>
           </div>

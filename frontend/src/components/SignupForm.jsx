@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { FlightIcon } from './common/WanderIcons';
+import { motion } from 'motion/react';
 
 const SignupForm = () => {
   const { signup } = useAuth();
@@ -51,17 +52,22 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="w-full max-w-lg bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-8 sm:p-10 shadow-xl relative">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="w-full max-w-lg bg-[var(--color-surface-1)] border border-[var(--color-hairline)] rounded-3xl p-8 sm:p-10 shadow-xl relative"
+    >
       {/* Top Icon Badge */}
       <div className="flex justify-center mb-4">
-        <div className="w-12 h-12 rounded-full bg-[#FAF8F5] border border-[#EBE7DF] flex items-center justify-center text-[#1D3B3A]">
-          <FlightIcon className="w-6 h-6 rotate-45 text-[#1D3B3A]" />
+        <div className="w-12 h-12 rounded-full bg-[var(--color-canvas)] border border-[var(--color-hairline)] flex items-center justify-center text-[var(--color-primary)]">
+          <FlightIcon className="w-6 h-6 rotate-45 text-[var(--color-primary)]" />
         </div>
       </div>
 
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-serif font-bold text-[#0F172A] tracking-tight">Let's Get You Started</h2>
-        <p className="mt-2 text-sm text-[#64748B]">
+        <h2 className="text-3xl font-serif font-bold text-[var(--color-ink)] tracking-tight">Let's Get You Started</h2>
+        <p className="mt-2 text-sm text-[var(--color-ink-subtle)]">
           Create an account and start your journey.
         </p>
       </div>
@@ -75,7 +81,7 @@ const SignupForm = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">Full Name</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">Full Name</label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#94A3B8]">
                 <User className="h-4 w-4" />
@@ -84,14 +90,14 @@ const SignupForm = () => {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="block w-full rounded-xl border border-[#EBE7DF] bg-[#FAF8F5] pl-10 pr-3.5 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#1D3B3A] focus:bg-[#FFFFFF] focus:outline-none transition-all"
+                className="block w-full rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)] pl-10 pr-3.5 py-3 text-sm text-[var(--color-ink)] placeholder-[#94A3B8] focus:border-[var(--color-primary)] focus:bg-[var(--color-surface-1)] focus:outline-none transition-all"
                 placeholder="Enter your full name"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">Email</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">Email</label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#94A3B8]">
                 <Mail className="h-4 w-4" />
@@ -100,7 +106,7 @@ const SignupForm = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-xl border border-[#EBE7DF] bg-[#FAF8F5] pl-10 pr-3.5 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#1D3B3A] focus:bg-[#FFFFFF] focus:outline-none transition-all"
+                className="block w-full rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)] pl-10 pr-3.5 py-3 text-sm text-[var(--color-ink)] placeholder-[#94A3B8] focus:border-[var(--color-primary)] focus:bg-[var(--color-surface-1)] focus:outline-none transition-all"
                 placeholder="Enter your email"
                 required
               />
@@ -109,7 +115,7 @@ const SignupForm = () => {
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">Password</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">Password</label>
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#94A3B8]">
               <Lock className="h-4 w-4" />
@@ -118,14 +124,14 @@ const SignupForm = () => {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full rounded-xl border border-[#EBE7DF] bg-[#FAF8F5] pl-10 pr-10 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#1D3B3A] focus:bg-[#FFFFFF] focus:outline-none transition-all"
+              className="block w-full rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)] pl-10 pr-10 py-3 text-sm text-[var(--color-ink)] placeholder-[#94A3B8] focus:border-[var(--color-primary)] focus:bg-[var(--color-surface-1)] focus:outline-none transition-all"
               placeholder="Create a password"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#94A3B8] hover:text-[#475569] transition-colors"
+              className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#94A3B8] hover:text-[var(--color-ink-muted)] transition-colors"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -133,7 +139,7 @@ const SignupForm = () => {
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">Confirm Password</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">Confirm Password</label>
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#94A3B8]">
               <Lock className="h-4 w-4" />
@@ -142,7 +148,7 @@ const SignupForm = () => {
               type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="block w-full rounded-xl border border-[#EBE7DF] bg-[#FAF8F5] pl-10 pr-10 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#1D3B3A] focus:bg-[#FFFFFF] focus:outline-none transition-all"
+              className="block w-full rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)] pl-10 pr-10 py-3 text-sm text-[var(--color-ink)] placeholder-[#94A3B8] focus:border-[var(--color-primary)] focus:bg-[var(--color-surface-1)] focus:outline-none transition-all"
               placeholder="Confirm your password"
               required
             />
@@ -150,10 +156,12 @@ const SignupForm = () => {
           <p className="text-2xs text-[#94A3B8] mt-1">Password must be at least 8 characters long.</p>
         </div>
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1D3B3A] hover:bg-[#162E2D] px-4 py-3.5 text-sm font-semibold text-white shadow-md transition-all cursor-pointer disabled:opacity-50 mt-2"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] px-4 py-3.5 text-sm font-semibold text-white shadow-md transition-colors cursor-pointer disabled:opacity-50 mt-2"
         >
           {loading ? (
             <>
@@ -166,13 +174,13 @@ const SignupForm = () => {
               <FlightIcon className="h-4 w-4 rotate-45 text-white" />
             </>
           )}
-        </button>
+        </motion.button>
       </form>
 
       <p className="mt-6 text-center text-xs text-[#94A3B8] leading-relaxed">
         By signing up, you agree to our <span className="underline cursor-pointer">Terms of Service</span> and <span className="underline cursor-pointer">Privacy Policy</span>.
       </p>
-    </div>
+    </motion.div>
   );
 };
 

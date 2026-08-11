@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Loader2, AlertCircle, UserPlus, Lock, Share2, Mail } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import * as itineraryApi from '../api/itineraryApi';
 import {
   WanderLogo,
@@ -96,22 +97,22 @@ const SharedItineraryPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1E293B] flex flex-col font-sans selection:bg-[#D97706]/20">
+    <div className="min-h-screen bg-[var(--color-canvas)] text-[var(--color-ink)] flex flex-col font-sans selection:bg-[#D97706]/20">
       {/* 1. PUBLIC TOP HEADER */}
-      <header className="bg-[#FFFDF9] border-b border-[#EBE7DF] px-6 h-18 flex items-center justify-between sticky top-0 z-40">
+      <header className="bg-[var(--color-surface-1)] border-b border-[var(--color-hairline)] px-6 h-18 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-6">
           <Link to="/">
             <WanderLogo />
           </Link>
-          <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-[#64748B] bg-[#FAF8F5] px-3 py-1.5 rounded-full border border-[#EBE7DF]">
-            <Lock className="w-3.5 h-3.5 text-[#1D3B3A]" />
+          <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-[var(--color-ink-subtle)] bg-[var(--color-canvas)] px-3 py-1.5 rounded-full border border-[var(--color-hairline)]">
+            <Lock className="w-3.5 h-3.5 text-[var(--color-primary)]" />
             <span>This is a public itinerary</span>
           </div>
         </div>
 
         <Link
           to="/signup"
-          className="bg-[#1D3B3A] hover:bg-[#162E2D] text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm"
+          className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm"
         >
           <span>Create Your Own Journey</span>
           <UserPlus className="w-4 h-4" />
@@ -122,17 +123,17 @@ const SharedItineraryPage = () => {
       <main className="flex-1 max-w-7xl mx-auto w-full p-6 lg:p-10 space-y-8">
         {/* HERO TITLE BANNER & CREATOR CARD */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-8 bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xs">
+          <div className="lg:col-span-8 bg-[var(--color-surface-1)] border border-[var(--color-hairline)] rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xs">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
               <div className="space-y-3 max-w-xl z-10">
-                <h1 className="font-serif font-extrabold text-3xl sm:text-4xl text-[#0F172A]">
+                <h1 className="font-serif font-extrabold text-3xl sm:text-4xl text-[var(--color-ink)]">
                   {itinerary.title || 'Japan Adventure'}
                 </h1>
-                <p className="text-xs font-bold text-[#64748B]">
+                <p className="text-xs font-bold text-[var(--color-ink-subtle)]">
                   {itinerary.startDate ? new Date(itinerary.startDate).toLocaleDateString() : '10 May 2026'}
                   {itinerary.endDate ? ` – ${new Date(itinerary.endDate).toLocaleDateString()}` : ' – 20 May 2026'} • Delhi → Tokyo → Kyoto → Osaka → Delhi
                 </p>
-                <p className="text-sm text-[#475569] leading-relaxed pt-2">
+                <p className="text-sm text-[var(--color-ink-muted)] leading-relaxed pt-2">
                   A beautiful multi-city journey parsed and organized automatically with Wander AI.
                 </p>
               </div>
@@ -145,17 +146,17 @@ const SharedItineraryPage = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-4 bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-6 space-y-4 shadow-2xs">
+          <div className="lg:col-span-4 bg-[var(--color-surface-1)] border border-[var(--color-hairline)] rounded-3xl p-6 space-y-4 shadow-2xs">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#E8F3F1] flex items-center justify-center text-[#1D3B3A] font-bold text-sm">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-primary)] font-bold text-sm">
                 TR
               </div>
               <div>
-                <div className="text-2xs font-bold uppercase text-[#94A3B8]">Shared by</div>
-                <div className="text-xs font-bold text-[#0F172A]">{itinerary.user?.email || 'traveler@wander.app'}</div>
+                <div className="text-2xs font-bold uppercase text-[var(--color-ink-subtle)]">Shared by</div>
+                <div className="text-xs font-bold text-[var(--color-ink)]">{itinerary.user?.email || 'traveler@wander.app'}</div>
               </div>
             </div>
-            <div className="text-2xs text-[#64748B] pt-2 border-t border-[#EBE7DF]">
+            <div className="text-2xs text-[var(--color-ink-subtle)] pt-2 border-t border-[var(--color-hairline)]">
               Anyone with this link can view this itinerary.
             </div>
           </div>
@@ -165,16 +166,22 @@ const SharedItineraryPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* LEFT 8 COLS: TIMELINE */}
           <div className="lg:col-span-8 space-y-6">
-            <h3 className="font-serif font-bold text-xl text-[#0F172A]">
+            <h3 className="font-serif font-bold text-xl text-[var(--color-ink)]">
               Your Itinerary
             </h3>
 
-            <div className="relative border-l-2 border-dashed border-[#CBD5E1] ml-4 pl-8 space-y-8 py-2">
+            <div className="relative border-l-2 border-dashed border-[var(--color-hairline-strong)] ml-4 pl-8 space-y-8 py-2">
               {itinerary.days?.map((day, dIdx) => (
-                <div key={dIdx} className="space-y-4 relative">
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: dIdx * 0.1, ease: "easeOut" }}
+                  key={dIdx} 
+                  className="space-y-4 relative"
+                >
                   {/* Day Marker */}
                   <div className="mb-2">
-                    <span className="text-xs font-extrabold uppercase text-[#0F172A] tracking-wider">
+                    <span className="text-xs font-extrabold uppercase text-[var(--color-ink)] tracking-wider">
                       Day {day.dayNumber} • {day.date}
                     </span>
                   </div>
@@ -183,34 +190,34 @@ const SharedItineraryPage = () => {
                   {day.activities?.map((act, aIdx) => (
                     <div key={aIdx} className="relative">
                       {/* Node Icon on Timeline Line */}
-                      <div className="absolute -left-[45px] top-3 w-8 h-8 rounded-full bg-[#FFFDF9] border-2 border-[#1D3B3A] flex items-center justify-center shadow-xs z-10">
+                      <div className="absolute -left-[45px] top-3 w-8 h-8 rounded-full bg-[var(--color-surface-1)] border-2 border-[var(--color-primary)] flex items-center justify-center shadow-xs z-10">
                         {getActivityIcon(act.type)}
                       </div>
 
                       {/* Card Content */}
-                      <div className="bg-[#FFFDF9] border border-[#EBE7DF] rounded-2xl p-5 space-y-2 hover:border-[#1D3B3A]/30 transition-all shadow-2xs">
+                      <div className="bg-[var(--color-surface-1)] border border-[var(--color-hairline)] rounded-2xl p-5 space-y-2 hover:border-[var(--color-hairline-strong)] transition-all shadow-2xs">
                         <div className="flex items-center justify-between">
                           <span className={`text-2xs font-bold uppercase px-2.5 py-0.5 rounded-full border ${getActivityBadgeClass(act.type)}`}>
                             {act.type || 'Activity'}
                           </span>
-                          <span className="text-xs font-semibold text-[#64748B]">{act.time}</span>
+                          <span className="text-xs font-semibold text-[var(--color-ink-subtle)]">{act.time}</span>
                         </div>
 
-                        <h4 className="font-bold text-base text-[#0F172A]">{act.title}</h4>
+                        <h4 className="font-bold text-base text-[var(--color-ink)]">{act.title}</h4>
 
                         {act.description && (
-                          <p className="text-xs text-[#64748B] leading-relaxed">{act.description}</p>
+                          <p className="text-xs text-[var(--color-ink-subtle)] leading-relaxed">{act.description}</p>
                         )}
 
                         {act.location && (
-                          <div className="text-2xs font-semibold text-[#94A3B8] pt-1">
+                          <div className="text-2xs font-semibold text-[var(--color-ink-muted)] pt-1">
                             Location: {act.location}
                           </div>
                         )}
                       </div>
                     </div>
                   ))}
-                </div>
+                </motion.div>
               ))}
             </div>
 
@@ -224,9 +231,9 @@ const SharedItineraryPage = () => {
           {/* RIGHT 4 COLS: MAP & EXPENSE CARD */}
           <div className="lg:col-span-4 space-y-6">
             {/* INTERACTIVE MAP CARD */}
-            <div className="bg-[#FFFDF9] border border-[#EBE7DF] rounded-3xl p-6 space-y-4 shadow-2xs">
-              <h4 className="font-serif font-bold text-base text-[#0F172A] flex items-center gap-2">
-                <FlightIcon className="w-4 h-4 text-[#1D3B3A]" />
+            <div className="bg-[var(--color-surface-1)] border border-[var(--color-hairline)] rounded-3xl p-6 space-y-4 shadow-2xs">
+              <h4 className="font-serif font-bold text-base text-[var(--color-ink)] flex items-center gap-2">
+                <FlightIcon className="w-4 h-4 text-[var(--color-primary)]" />
                 <span>Interactive Journey Map</span>
               </h4>
 
@@ -240,8 +247,8 @@ const SharedItineraryPage = () => {
       </main>
 
       {/* 3. FOOTER */}
-      <footer className="bg-[#FAF8F5] border-t border-[#EBE7DF] pt-12 pb-8 mt-12">
-        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-12 gap-8 text-xs text-[#64748B]">
+      <footer className="bg-[var(--color-canvas)] border-t border-[var(--color-hairline)] pt-12 pb-8 mt-12">
+        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-12 gap-8 text-xs text-[var(--color-ink-subtle)]">
           <div className="md:col-span-6 space-y-3">
             <WanderLogo />
             <p className="max-w-xs leading-relaxed">
@@ -249,12 +256,12 @@ const SharedItineraryPage = () => {
             </p>
           </div>
           <div className="md:col-span-6 flex flex-wrap justify-start md:justify-end gap-6 items-center">
-            <a href="https://github.com/ashishsharma349/ORBITRA_TRIP" target="_blank" rel="noreferrer" className="hover:text-[#1D3B3A]">GitHub</a>
-            <a href="https://www.linkedin.com/in/ashish-sharma-8802a8346/" target="_blank" rel="noreferrer" className="hover:text-[#1D3B3A]">LinkedIn</a>
-            <a href="mailto:ashishsharma90807@gmail.com" className="hover:text-[#1D3B3A]">ashishsharma90807@gmail.com</a>
+            <a href="https://github.com/ashishsharma349/ORBITRA_TRIP" target="_blank" rel="noreferrer" className="hover:text-[var(--color-primary)]">GitHub</a>
+            <a href="https://www.linkedin.com/in/ashish-sharma-8802a8346/" target="_blank" rel="noreferrer" className="hover:text-[var(--color-primary)]">LinkedIn</a>
+            <a href="mailto:ashishsharma90807@gmail.com" className="hover:text-[var(--color-primary)]">ashishsharma90807@gmail.com</a>
           </div>
         </div>
-        <div className="text-center text-2xs text-[#94A3B8] mt-8 pt-4 border-t border-[#EBE7DF]">
+        <div className="text-center text-2xs text-[var(--color-ink-muted)] mt-8 pt-4 border-t border-[var(--color-hairline)]">
           © 2026 Wander. All rights reserved.
         </div>
       </footer>
