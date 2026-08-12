@@ -50,8 +50,8 @@ Thumbs.db
 
 # Best practices reference file
 best_practises.txt
+Learnings.md
 
 # Test suites
 backend/test/
 test/
-

@@ -114,4 +114,4 @@ The frontend will run on `http://localhost:5173`.
 ## Live Application
 
 You can access the live version of Wander here:
-https://orbitra-trip.vercel.app
+https://orbitra-trip-ffhb.vercel.app/
