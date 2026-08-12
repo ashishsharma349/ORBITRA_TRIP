@@ -12,23 +12,23 @@ const ExpenseBreakdownCard = ({ activities = [] }) => {
       const cost = Number(act.cost || act.price || 0);
       switch (act.type?.toLowerCase()) {
         case 'flight':
-          flightCost += cost || 450;
+          flightCost += cost;
           break;
         case 'hotel':
         case 'lodging':
-          hotelCost += cost || 320;
+          hotelCost += cost;
           break;
         case 'train':
         case 'transit':
-          trainCost += cost || 85;
+          trainCost += cost;
           break;
         default:
-          activityCost += cost || 60;
+          activityCost += cost;
           break;
       }
     });
 
-    const total = flightCost + hotelCost + trainCost + activityCost || 915;
+    const total = flightCost + hotelCost + trainCost + activityCost;
     return { flightCost, hotelCost, trainCost, activityCost, total };
   };
 
@@ -48,10 +48,10 @@ const ExpenseBreakdownCard = ({ activities = [] }) => {
 
       {/* Progress Bar */}
       <div className="w-full bg-[#FAF8F5] border border-[#EBE7DF] h-2.5 rounded-full overflow-hidden flex">
-        <div style={{ width: `${(flightCost / total) * 100}%` }} className="bg-[#1D3B3A]" title="Flights" />
-        <div style={{ width: `${(hotelCost / total) * 100}%` }} className="bg-[#D97706]" title="Hotels" />
-        <div style={{ width: `${(trainCost / total) * 100}%` }} className="bg-[#059669]" title="Transit" />
-        <div style={{ width: `${(activityCost / total) * 100}%` }} className="bg-[#7C3AED]" title="Activities" />
+        <div style={{ width: total > 0 ? `${(flightCost / total) * 100}%` : '0%' }} className="bg-[#1D3B3A]" title="Flights" />
+        <div style={{ width: total > 0 ? `${(hotelCost / total) * 100}%` : '0%' }} className="bg-[#D97706]" title="Hotels" />
+        <div style={{ width: total > 0 ? `${(trainCost / total) * 100}%` : '0%' }} className="bg-[#059669]" title="Transit" />
+        <div style={{ width: total > 0 ? `${(activityCost / total) * 100}%` : '0%' }} className="bg-[#7C3AED]" title="Activities" />
       </div>
 
       {/* Categories List */}
@@ -61,7 +61,7 @@ const ExpenseBreakdownCard = ({ activities = [] }) => {
             <Plane className="w-3.5 h-3.5 text-[#1D3B3A]" />
             <span>Flights</span>
           </span>
-          <span className="font-bold text-[#0F172A]">${flightCost || 450}</span>
+          <span className="font-bold text-[#0F172A]">${flightCost}</span>
         </div>
 
         <div className="flex items-center justify-between p-2 rounded-lg bg-[#FAF8F5]">
@@ -69,7 +69,7 @@ const ExpenseBreakdownCard = ({ activities = [] }) => {
             <Building className="w-3.5 h-3.5 text-[#D97706]" />
             <span>Hotels</span>
           </span>
-          <span className="font-bold text-[#0F172A]">${hotelCost || 320}</span>
+          <span className="font-bold text-[#0F172A]">${hotelCost}</span>
         </div>
 
         <div className="flex items-center justify-between p-2 rounded-lg bg-[#FAF8F5]">
@@ -77,7 +77,7 @@ const ExpenseBreakdownCard = ({ activities = [] }) => {
             <Train className="w-3.5 h-3.5 text-[#059669]" />
             <span>Transit</span>
           </span>
-          <span className="font-bold text-[#0F172A]">${trainCost || 85}</span>
+          <span className="font-bold text-[#0F172A]">${trainCost}</span>
         </div>
 
         <div className="flex items-center justify-between p-2 rounded-lg bg-[#FAF8F5]">
@@ -85,7 +85,7 @@ const ExpenseBreakdownCard = ({ activities = [] }) => {
             <Compass className="w-3.5 h-3.5 text-[#7C3AED]" />
             <span>Activities</span>
           </span>
-          <span className="font-bold text-[#0F172A]">${activityCost || 60}</span>
+          <span className="font-bold text-[#0F172A]">${activityCost}</span>
         </div>
       </div>
     </div>

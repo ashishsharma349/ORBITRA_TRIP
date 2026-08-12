@@ -11,30 +11,38 @@ const DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const CITY_COORDINATES = {
-  delhi: [28.6139, 77.2090],
-  tokyo: [35.6762, 139.6503],
-  kyoto: [35.0116, 135.7681],
-  osaka: [34.6937, 135.5023],
-  london: [51.5074, -0.1278],
-  paris: [48.8566, 2.3522]
-};
+const InteractiveMap = ({ itineraries = [], className = "w-full h-64" }) => {
+  const positions = [];
+  
+  itineraries.forEach(trip => {
+    trip.days?.forEach(day => {
+      day.activities?.forEach(act => {
+        if (act.coordinates && Array.isArray(act.coordinates) && act.coordinates.length === 2) {
+          positions.push({
+            name: act.location || act.title || 'Stop',
+            coords: act.coordinates,
+            tripTitle: trip.title
+          });
+        }
+      });
+    });
+  });
 
-const InteractiveMap = ({ itineraries, className = "w-full h-64" }) => {
-  const defaultCenter = CITY_COORDINATES.tokyo;
+  // Fallback to demo if completely empty
+  if (positions.length === 0) {
+    positions.push(
+      { name: 'Delhi (Demo)', coords: [28.6139, 77.2090], tripTitle: 'Demo' },
+      { name: 'Tokyo (Demo)', coords: [35.6762, 139.6503], tripTitle: 'Demo' }
+    );
+  }
 
-  const positions = [
-    { name: 'Delhi', coords: CITY_COORDINATES.delhi },
-    { name: 'Tokyo', coords: CITY_COORDINATES.tokyo },
-    { name: 'Kyoto', coords: CITY_COORDINATES.kyoto },
-    { name: 'Osaka', coords: CITY_COORDINATES.osaka }
-  ];
-
+  const defaultCenter = positions[0].coords;
   const polylineRoute = positions.map((p) => p.coords);
 
   return (
     <div className={`${className} rounded-2xl overflow-hidden border border-[#EBE7DF] shadow-xs relative z-0`}>
       <MapContainer
+        key={defaultCenter.join(',')}
         center={defaultCenter}
         zoom={4}
         scrollWheelZoom={false}
@@ -55,7 +63,7 @@ const InteractiveMap = ({ itineraries, className = "w-full h-64" }) => {
             <Popup>
               <div className="font-sans text-xs">
                 <strong className="text-[#0F172A]">{pos.name}</strong>
-                <p className="text-[#64748B] text-2xs mt-0.5">Wander Route Stop #{idx + 1}</p>
+                <p className="text-[#64748B] text-2xs mt-0.5">{pos.tripTitle}</p>
               </div>
             </Popup>
           </Marker>

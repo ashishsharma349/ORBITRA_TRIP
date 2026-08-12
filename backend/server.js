@@ -20,11 +20,15 @@ const app = express();
 app.use(helmet());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'tiny' : 'dev'));
 
-const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : '';
+const allowedOrigins = [
+  process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : '',
+  'http://localhost:5173',
+  'http://localhost:5174'
+].filter(Boolean);
 
 app.use(
   cors({
-    origin: frontendUrl,
+    origin: allowedOrigins,
     credentials: true,
   })
 );

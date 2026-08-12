@@ -86,7 +86,9 @@ Format the output as a JSON object matching this schema:
           "type": "flight" | "hotel" | "train" | "activity" | "other",
           "title": "Short title",
           "description": "Details or null if not found",
-          "location": "Location or null if not found"
+          "location": "Location or null if not found",
+          "cost": "Numeric cost in USD if found (e.g., 45.50), otherwise 0",
+          "coordinates": "Array of [latitude, longitude] based on location/city if found, otherwise null"
         }
       ]
     }
@@ -130,7 +132,9 @@ Format the output as a JSON object matching this schema:
           "type": "flight" | "hotel" | "train" | "activity" | "other",
           "title": "Short title",
           "description": "Details or null if not found",
-          "location": "Location or null if not found"
+          "location": "Location or null if not found",
+          "cost": "Numeric cost in USD if found (e.g., 45.50), otherwise 0",
+          "coordinates": "Array of [latitude, longitude] based on location/city if found, otherwise null"
         }
       ]
     }

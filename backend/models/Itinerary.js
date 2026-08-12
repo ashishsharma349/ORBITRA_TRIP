@@ -19,6 +19,13 @@ const activitySchema = new mongoose.Schema({
   location: {
     type: String,
   },
+  cost: {
+    type: Number,
+    default: 0
+  },
+  coordinates: {
+    type: [Number], // [latitude, longitude]
+  }
 });
 
 const daySchema = new mongoose.Schema({

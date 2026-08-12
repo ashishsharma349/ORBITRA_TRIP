@@ -1,8 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Plane, Building2, Train as TrainLucide, Compass } from 'lucide-react';
 
 // Wander Compass Logo
 export const WanderLogo = ({ className = "h-9 w-9", textClass = "text-2xl font-bold font-serif text-[#1D3B3A]" }) => (
-  <div className="flex items-center gap-2.5">
+  <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
     <svg className={className} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="45" stroke="#1D3B3A" strokeWidth="3.5" fill="#FAF8F3"/>
       <circle cx="50" cy="50" r="40" stroke="#C8BFA9" strokeWidth="1.5" strokeDasharray="3 3"/>
@@ -12,47 +14,27 @@ export const WanderLogo = ({ className = "h-9 w-9", textClass = "text-2xl font-b
       <circle cx="50" cy="50" r="4" fill="#FAF8F3" stroke="#1D3B3A" strokeWidth="2"/>
     </svg>
     <span className={textClass}>Wander</span>
-  </div>
+  </Link>
 );
 
 // Flight Node Icon
 export const FlightIcon = ({ className = "h-5 w-5 text-[#1D3B3A]" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3.5c-.5-.5-2.5 0-4 1.5L13.5 8.5 5.3 6.7c-.8-.2-1.6.1-2.1.7l-.6.7c-.5.6-.3 1.5.3 2.1l4.9 4.3-3.2 3.2-2.3-.4c-.4-.1-.8.1-1.1.4l-.4.4c-.4.4-.3 1.1.2 1.4l3.7 2.6c.4.3 1 .3 1.4-.2l.4-.4c.3-.3.5-.7.4-1.1l-.4-2.3 3.2-3.2 4.3 4.9c.6.6 1.5.8 2.1.3l.7-.6c.6-.5.9-1.3.7-2.1z"/>
-  </svg>
+  <Plane className={className} strokeWidth={1.5} />
 );
 
 // Hotel Node Icon
 export const HotelIcon = ({ className = "h-5 w-5 text-[#D97706]" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
-    <path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2"/>
-    <path d="M10 6h4"/>
-    <path d="M10 10h4"/>
-    <path d="M10 14h4"/>
-    <path d="M10 18h4"/>
-  </svg>
+  <Building2 className={className} strokeWidth={1.5} />
 );
 
 // Train Node Icon
 export const TrainIcon = ({ className = "h-5 w-5 text-[#059669]" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="16" height="16" x="4" y="3" rx="3"/>
-    <path d="M4 11h16"/>
-    <path d="M12 3v8"/>
-    <path d="m8 19-3 3"/>
-    <path d="m16 19 3 3"/>
-    <circle cx="8" cy="15" r="1"/>
-    <circle cx="16" cy="15" r="1"/>
-  </svg>
+  <TrainLucide className={className} strokeWidth={1.5} />
 );
 
 // Activity Compass Icon
 export const ActivityIcon = ({ className = "h-5 w-5 text-[#7C3AED]" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-  </svg>
+  <Compass className={className} strokeWidth={1.5} />
 );
 
 // Stamp Badge Component

@@ -50,7 +50,7 @@ const LoginForm = () => {
       {/* Top Icon Badge */}
       <div className="flex justify-center mb-4">
         <div className="w-12 h-12 rounded-full bg-[var(--color-canvas)] border border-[var(--color-hairline)] flex items-center justify-center text-[var(--color-primary)]">
-          <FlightIcon className="w-6 h-6 rotate-45 text-[var(--color-primary)]" />
+          <FlightIcon className="w-6 h-6 text-[var(--color-primary)]" />
         </div>
       </div>
 
@@ -137,7 +137,7 @@ const LoginForm = () => {
           ) : (
             <>
               <span>Login</span>
-              <FlightIcon className="h-4 w-4 rotate-45 text-white" />
+              <FlightIcon className="h-4 w-4 text-white" />
             </>
           )}
         </motion.button>

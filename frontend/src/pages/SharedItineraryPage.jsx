@@ -17,8 +17,10 @@ import {
 } from '../components/common/WanderIcons';
 import InteractiveMap from '../components/map/InteractiveMap';
 import ExpenseBreakdownCard from '../components/dashboard/ExpenseBreakdownCard';
+import { useAuth } from '../context/AuthContext';
 
 const SharedItineraryPage = () => {
+  const { isAuthenticated } = useAuth();
   const { shareToken } = useParams();
   const [itinerary, setItinerary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -110,13 +112,22 @@ const SharedItineraryPage = () => {
           </div>
         </div>
 
-        <Link
-          to="/signup"
-          className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm"
-        >
-          <span>Create Your Own Journey</span>
-          <UserPlus className="w-4 h-4" />
-        </Link>
+        {isAuthenticated ? (
+          <Link
+            to="/dashboard"
+            className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm"
+          >
+            Dashboard
+          </Link>
+        ) : (
+          <Link
+            to="/signup"
+            className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span className="hidden sm:inline">Create your own</span>
+          </Link>
+        )}
       </header>
 
       {/* 2. MAIN CONTAINER */}

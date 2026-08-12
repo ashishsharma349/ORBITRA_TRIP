@@ -30,9 +30,11 @@ import { DashboardSkeleton, TimelineItemSkeleton } from '../components/common/Sk
 
 const DashboardPage = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [itineraries, setItineraries] = useState([]);
   const [selectedItinerary, setSelectedItinerary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState('');
@@ -68,10 +70,12 @@ const DashboardPage = () => {
   };
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
       await logout();
     } catch (err) {
       console.error(err);
+      setIsLoggingOut(false);
     }
   };
 
@@ -111,7 +115,7 @@ const DashboardPage = () => {
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error?.message || 'Failed to process document with Gemini AI.');
+      setError(err.response?.data?.error?.message || 'Failed to process travel document.');
     } finally {
       setUploading(false);
     }
@@ -235,8 +239,8 @@ const DashboardPage = () => {
       <header className="bg-[#FFFDF9] border-b border-[#EBE7DF] px-6 h-18 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-6">
           <WanderLogo />
-          <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-[#64748B] bg-[#FAF8F5] px-3 py-1.5 rounded-full border border-[#EBE7DF]">
-            <FlightIcon className="w-4 h-4 text-[#D97706]" />
+          <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-[var(--color-ink-muted)] bg-[var(--color-surface-1)] px-3 py-1.5 rounded-full border border-[var(--color-hairline-strong)] shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] animate-pulse"></span>
             <span>Your Travel Workspace</span>
           </div>
         </div>
@@ -258,10 +262,15 @@ const DashboardPage = () => {
 
           <button
             onClick={handleLogout}
-            className="border border-[#EBE7DF] bg-[#FFFDF9] hover:bg-[#FAF8F5] text-[#475569] hover:text-[#1D3B3A] text-xs font-semibold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ml-2"
+            disabled={isLoggingOut}
+            className="border border-[#EBE7DF] bg-[#FFFDF9] hover:bg-[#FAF8F5] text-[#475569] hover:text-[#1D3B3A] text-xs font-semibold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ml-2 disabled:opacity-50"
           >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Sign Out</span>
+            {isLoggingOut ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <LogOut className="w-3.5 h-3.5" />
+            )}
+            <span>{isLoggingOut ? 'Signing Out...' : 'Sign Out'}</span>
           </button>
         </div>
       </header>
@@ -298,7 +307,7 @@ const DashboardPage = () => {
               {itineraries.length === 0 ? (
                 <div className="text-center py-8 space-y-3">
                   <div className="w-12 h-12 rounded-full bg-[var(--color-canvas)] border border-[var(--color-hairline)] mx-auto flex items-center justify-center text-[#94A3B8]">
-                    <FlightIcon className="w-6 h-6 rotate-45 text-[#94A3B8]" />
+                    <FlightIcon className="w-6 h-6 text-[#94A3B8]" />
                   </div>
                   <p className="text-xs text-[var(--color-ink-subtle)] leading-relaxed">
                     Your journeys will appear here.<br />Start by creating a new trip.
@@ -382,7 +391,7 @@ const DashboardPage = () => {
           {uploading && (
             <div className="space-y-4">
               <div className="bg-[#FFFDF9] border-2 border-dashed border-[#1D3B3A] rounded-2xl p-6 text-center space-y-2">
-                <h3 className="font-serif font-bold text-lg text-[#0F172A]">Gemini AI Reading Travel Documents...</h3>
+                <h3 className="font-serif font-bold text-lg text-[var(--color-ink)]">Extracting Travel Details...</h3>
                 <p className="text-xs text-[#64748B]">Extracting dates, flights, hotels, and activities automatically.</p>
               </div>
               <TimelineItemSkeleton />
