@@ -1,6 +1,6 @@
-# Orbitra Trip
+# Wander
 
-Orbitra Trip is a travel companion app that transforms chaotic booking receipts into neat, chronological travel itineraries. By uploading booking confirmation PDFs or images (like flights, hotels, and train tickets), Orbitra uses the Google Gemini API to parse the documents and generate a day-by-day trip roadmap automatically.
+Wander is a travel companion app that transforms chaotic booking receipts into neat, chronological travel itineraries. By uploading booking confirmation PDFs or images (like flights, hotels, and train tickets), Wander uses the Google Gemini API to parse the documents and generate a day-by-day trip roadmap automatically.
 
 ---
 
@@ -113,5 +113,5 @@ The frontend will run on `http://localhost:5173`.
 
 ## Live Application
 
-You can access the live version of Orbitra Trip here:
+You can access the live version of Wander here:
 https://orbitra-trip.vercel.app
